@@ -1,0 +1,186 @@
+---
+title: "Blog Post Template"
+author: "Your Name"
+desription: "Something to describe what I did"
+date: "08/02/2022"
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-copy: true
+    code-tools: true
+categories:
+  - hw1
+  - challenge1
+  - my name
+  - dataset
+  - ggplot2
+---
+
+library (readxl)
+
+library(tidyverse)
+
+#1a.
+
+LungCapData <- read_excel("_data/LungCapData.xls")
+
+LungCapData
+
+#Lung cap distribution
+
+hist(LungCapData$LungCap, freq = FALSE)
+
+#1b. Lung cap and gender
+
+boxplot(LungCapData$LungCap~LungCapData$Gender)
+
+#1c. smoker v. non-smoker and lung cap
+
+LungCapData %>%
+
+group_by(Smoke) %>%
+
+summarize(Mean = mean(LungCap))
+
+#1d. lung cap, smoking, age group
+
+# lung cap is 9.62
+
+LungCapData %>%
+
+select(Age, LungCap) %>%
+
+filter(Age >= 13) %>%
+
+colMeans()
+
+# lung cap is 9.04
+
+LungCapData%>%
+
+select(Age, LungCap) %>%
+
+filter(Age >= 14 & Age <= 15) %>%
+
+colMeans()
+
+# lung cap is 10.24
+
+LungCapData %>%
+
+select(Age, LungCap) %>%
+
+filter(Age >= 16 & Age <= 17) %>%
+
+colMeans()
+
+# lung cap is 11.26
+
+LungCapData %>%
+
+select(Age, LungCap) %>%
+
+filter(Age > 18) %>%
+
+colMeans()
+
+#1e. lung capacities for smokers and non-smokers. age group
+
+LungCapData %>%
+
+select(Age, LungCap, Smoke) %>%
+
+group_by(Smoke) %>%
+
+filter(Age >= 13) %>%
+
+summarize_at(vars(LungCap), list(mean = mean))
+
+LungCapData%>%
+
+select(Age, LungCap, Smoke) %>%
+
+group_by(Smoke) %>%
+
+filter(Age >= 14 & Age <= 15) %>%
+
+summarize_at(vars(LungCap), list(mean = mean))
+
+LungCapData %>%
+
+select(Age, LungCap, Smoke) %>%
+
+group_by(Smoke) %>%
+
+filter(Age >= 16 & Age <= 17) %>%
+
+summarize_at(vars(LungCap), list(mean = mean))
+
+LungCapData %>%
+
+select(Age, LungCap, Smoke) %>%
+
+group_by(Smoke) %>%
+
+filter(Age > 18) %>%
+
+summarize_at(vars(LungCap), list(mean = mean))
+
+#1f. correlation and cov, lung cap, age
+
+cov(LungCapData$LungCap, LungCapData$Age)
+
+cor(LungCapData$LungCap, LungCapData$Age)
+
+#Code for table
+
+x <-c(0,1,2,3,4)
+
+freq <-c(128,434,160,64,24)
+
+vec <- c(128+434+160+64+24)
+
+convicts <- data.frame(x,freq)
+
+convicts
+
+#table with probability
+
+convicts2 <- mutate(convicts, Probability = freq/sum(freq))
+
+convicts2
+
+#2a. probability for 2 convictions
+
+convicts2 %>%
+
+select(x, freq, Probability) %>%
+
+filter (x==2)
+
+#2b probability for less than 2 convictions
+
+(128+434)/vec
+
+#2c probability for 2 or lesser convictions
+
+(128+434+160)/vec
+
+#2d probability for 2 or more convictions
+
+(160+64+24)/vec
+
+#2e expected value= sum of probability * each value
+
+weighted.mean(probability, c(0,1,2,3,4))
+
+#2f variance and standard dev for prior convictions
+
+variance <- var(convicts$freq)
+
+variance
+
+standard_dev <- sd(convicts$freq)
+
+standard_dev
